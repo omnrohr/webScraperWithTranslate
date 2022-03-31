@@ -1,7 +1,14 @@
+from cgitb import reset
+from multiprocessing.dummy import Array
 import time
+from unittest import result
 from bs4 import BeautifulSoup as BS
 import requests
 import csv
+
+
+
+
 
 
 SCRAPED_FILE_LINK = 'D:\\webScraber\\source.csv'
@@ -20,12 +27,12 @@ with open(SCRAPED_FILE_LINK, 'r', encoding='utf-8') as f:
     
     links_array = []
     for line in contentArray:
-        links_array.append(line[1])
+        result = [i for i in line if i.startswith('https')][0]
+        links_array.append(result)
 
 with open(TARGETED_TO_SAVE_FILE_PATH, 'w',newline='', encoding='utf-8') as savedExcel:
     for i in range(START_LINE_TO_SCRAPE, len(links_array)):
         try:
-            print(links_array[i])
             fullPage = BS(requests.get(links_array[i]).content, 'lxml')
             item.append(contentArray[i][0]) #title
             item.append(contentArray[i][1]) # link
@@ -52,3 +59,6 @@ with open(TARGETED_TO_SAVE_FILE_PATH, 'w',newline='', encoding='utf-8') as saved
             csv_writer.writerow(item)
             item = []
             time.sleep(10)
+            
+    f.close()
+    savedExcel.close()
